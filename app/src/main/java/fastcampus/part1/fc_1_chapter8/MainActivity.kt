@@ -6,15 +6,16 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.GridLayoutManager
 import fastcampus.part1.fc_1_chapter8.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
+    private lateinit var imageAdapter : ImageAdapter
     private val imageLoadLauncher = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) { uriList ->
         updateImages(uriList)
     }
@@ -27,6 +28,22 @@ class MainActivity : AppCompatActivity() {
 
         binding.loadImageButton.setOnClickListener {
             checkPermission()
+        }
+
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        imageAdapter = ImageAdapter(object : ImageAdapter.ItemClickListener {
+            override fun onLoadMoreClick() {
+                checkPermission()
+            }
+        })
+
+        // 어댑터 선언 및 layoutManager 지정
+        binding.imageRecyclerView.apply {
+            adapter = imageAdapter
+            layoutManager = GridLayoutManager(context, 2)
         }
     }
 
@@ -68,6 +85,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateImages(uriList: List<Uri>) {
         Log.i("updateImages", "$uriList")
+        val images = uriList.map { ImageItems.Image(it) }
+        // 기존에 있던 것에서 추가됨 (매번 새롭게 갱신되지 않음)
+        val updatedImages = imageAdapter.currentList.toMutableList().apply {
+            addAll(images)
+        }
+         imageAdapter.submitList(updatedImages) // submitList : 데이터 변경사항 알아서 처리
     }
 
     // Permissions Allow 누른 다음 다시 버튼 누르지 않도록 편의성 제공
@@ -80,7 +103,8 @@ class MainActivity : AppCompatActivity() {
 
         when(requestCode) {
             REQUEST_READ_EXTERNAL_STORAGE -> {
-                if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED) {
+                val resultCode = grantResults.firstOrNull() ?: PackageManager.PERMISSION_DENIED // NPE 개선
+                if (resultCode == PackageManager.PERMISSION_GRANTED) {
                     loadImage()
                 }
             }
