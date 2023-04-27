@@ -9,5 +9,6 @@ sealed class ImageItems {
         val uri : Uri,
     ) : ImageItems()
 
+    // singleton으로 객체가 바로 만들어짐
     object LoadMore : ImageItems()
 }

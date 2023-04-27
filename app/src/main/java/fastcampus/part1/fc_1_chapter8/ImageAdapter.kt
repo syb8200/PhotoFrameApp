@@ -10,7 +10,7 @@ import fastcampus.part1.fc_1_chapter8.databinding.ItemImageBinding
 import fastcampus.part1.fc_1_chapter8.databinding.ItemLoadMoreBinding
 
 class ImageAdapter(private val itemClickListener: ItemClickListener) : ListAdapter<ImageItems, RecyclerView.ViewHolder>(
-    //  ListAdapter를 사용했을 때 DiffUtil을 사용해주어야 한다. -> 아이템이 변경되었는지 확인
+    //  ListAdapter를 사용했을 때 DiffUtil을 사용해주어야 한다. -> 아이템이 변경되었는지 알아서 확인
     object : DiffUtil.ItemCallback<ImageItems>() {
         override fun areItemsTheSame(oldItem: ImageItems, newItem: ImageItems): Boolean {
             // 참조의 동등성 : ===
@@ -31,9 +31,9 @@ class ImageAdapter(private val itemClickListener: ItemClickListener) : ListAdapt
     }
 
     override fun getItemViewType(position: Int): Int {
+        // 2가지 이상이 되면 아이템 타입을 체킹 해줘야 한다.
         // footer와 다른 것들 viewType 다르게 설정
-        if (itemCount.dec() == position) ITEM_ITEM_LOAD_MORE else ITEM_IMAGE
-        return super.getItemViewType(position)
+        return if (itemCount.dec() == position) ITEM_LOAD_MORE else ITEM_IMAGE
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -74,7 +74,7 @@ class ImageAdapter(private val itemClickListener: ItemClickListener) : ListAdapt
 
     companion object {
         const val ITEM_IMAGE = 0
-        const val ITEM_ITEM_LOAD_MORE = 1
+        const val ITEM_LOAD_MORE = 1
     }
 }
 
