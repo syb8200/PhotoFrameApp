@@ -7,6 +7,8 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -27,6 +29,12 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        binding.toolBar.apply {
+            title = "사진 가져오기"
+            setSupportActionBar(this)
+        }
+
+
         binding.loadImageButton.setOnClickListener {
             checkPermission()
         }
@@ -36,6 +44,25 @@ class MainActivity : AppCompatActivity() {
         }
 
         initRecyclerView()
+    }
+
+    // 메뉴가 생기게 된다.
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    // +버튼 눌렀을 때 수행하는 기능
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_add -> {
+                checkPermission()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     private fun navigateToFrameActivity() {

@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#FFEB3B"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/loadImageButton"
         android:layout_width="wrap_content"
@@ -24,13 +31,13 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/loadImageButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    
+        app:layout_constraintTop_toBottomOf="@id/toolBar" />
+
     <Button
         android:id="@+id/navigateFrameActivityButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="나만의 앨범 만들기"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
